@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Sign-In with Firebase</title>
+
+  <!-- Firebase Compatibility Mode CDN -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <style>
+    /* CSS Styling */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+
+    #container {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #357ae8;
+    }
+
+    img {
+      border-radius: 50%;
+      margin-top: 10px;
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Google Sign-In with Firebase</h1>
+    <button id="googleSignIn">Sign in with Google</button>
+    <button id="signOut" style="display: none;">Sign Out</button>
+    <div id="userDetails" style="margin-top: 20px;"></div>
+  </div>
+
+  <script>
+    // Firebase Configuration (Replace with your Firebase project config)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCNyZAmw3D8aCqNOHOw0f3YKtZWNatauN8",
+  authDomain: "hello-4105a.firebaseapp.com",
+  projectId: "hello-4105a",
+  storageBucket: "hello-4105a.appspot.com",
+  messagingSenderId: "978669199403",
+  appId: "1:978669199403:web:6c20e3dbaf815bba890a6e",
+  measurementId: "G-2TGPP3E88X"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Set up Google Authentication Provider
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    // Google Sign-In Function
+    document.getElementById('googleSignIn').addEventListener('click', () => {
+      auth.signInWithPopup(googleProvider)
+        .then((result) => {
+          const user = result.user;
+          document.getElementById('userDetails').innerHTML = `
+            <p>Welcome, ${user.displayName}!</p>
+            <img src="${user.photoURL}" alt="User Profile Picture" />
+          `;
+          document.getElementById('googleSignIn').style.display = 'none';
+          document.getElementById('signOut').style.display = 'block';
+        })
+        .catch((error) => {
+          console.error('Error during sign-in:', error);
+        });
+    });
+
+    // Sign-Out Function
+    document.getElementById('signOut').addEventListener('click', () => {
+      auth.signOut()
+        .then(() => {
+          document.getElementById('userDetails').innerHTML = '';
+          document.getElementById('googleSignIn').style.display = 'block';
+          document.getElementById('signOut').style.display = 'none';
+        })
+        .catch((error) => {
+          console.error('Error during sign-out:', error);
+        });
+    });
+  </script>
+</body>
+</html>
